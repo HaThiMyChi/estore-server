@@ -119,8 +119,8 @@ orders.get('/allorders', checkToken, (req, res) => {
 
 orders.get('/orderproducts', checkToken, (req, res) => {
   try {
-    let orderId = req.body.orderId;
-    pool.query(`select orderdetails.*, products.product_name from 
+    let orderId = req.query.orderId;
+    pool.query(`select orderdetails.*, products.product_name, products.product_img from 
       orderDetails, products
       where orderDetails.productId = products.id and orderId=${orderId}`,
       (error, orderProducts) => {
@@ -135,6 +135,7 @@ orders.get('/orderproducts', checkToken, (req, res) => {
             orderDetails.push({
               productId: orderProduct.productId,
               productName: orderProduct.productName,
+              productImage: orderProduct.product_img,
               qty: orderProduct.qty,
               price: orderProduct.price,
               amount: orderProduct.amount
