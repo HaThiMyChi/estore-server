@@ -68,9 +68,9 @@ orders.post('/add', checkToken, (req, res) => {
 
 orders.get('/allorders', checkToken, (req, res) => {
   try {
-    let userEmail = req.body.userEmail;
+    let userEmail = req.query.userEmail;
     pool.query(
-      `select id from users where email = '${userEmail}'`, (error, user) => {
+      `select id from users where email ='${userEmail}'`, (error, user) => {
         if (error) {
           res.status(500).send({
             error: error.code,
@@ -88,9 +88,9 @@ orders.get('/allorders', checkToken, (req, res) => {
                     message: error.message
                   })
                 } else {
-                  const allorders = [];
+                  const allOrders = [];
                   orders.forEach((order) => {
-                    allorders.push({
+                    allOrders.push({
                       orderId: order.orderId,
                       userName: order.userName,
                       address: order.address,
@@ -101,7 +101,7 @@ orders.get('/allorders', checkToken, (req, res) => {
                       orderDate: order.orderDate,
                     });
                   });
-                  res.status(200).send(allorders);
+                  res.status(200).send(allOrders);
                 }
               }
             )
@@ -122,7 +122,7 @@ orders.get('/orderproducts', checkToken, (req, res) => {
     let orderId = req.query.orderId;
     pool.query(`select orderdetails.*, products.product_name, products.product_img from 
       orderDetails, products
-      where orderDetails.productId = products.id and orderId=${orderId}`,
+      where orderDetails.productId = products.id and orderId = ${orderId}`,
       (error, orderProducts) => {
         if (error) {
           res.status(500).send({
